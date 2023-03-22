@@ -41,18 +41,18 @@ if clicked:
         time.sleep(0.2)
     res = cur.execute(query).fetchall()
     if res != []:
-        col1, col2 = st.columns(2)
-        with col1:
-            if res[0][5] == 'Femenino':
-                icon = Image.open('./img/icon_woman.png')
-            else:
-                icon = Image.open('./img/icon_man.png')
-            st.image(icon, width = 250)
-            
-        with col2:
-            st.header(res[0][1] + ' ' + res[0][2] + ' ' + res[0][3])
-            st.header(res[0][0])
-            st.header(res[0][4])
+        for estudiante in res:
+            col1, col2 = st.columns(2)
+            with col1:
+                if estudiante[5] == 'Femenino':
+                    icon = Image.open('./img/icon_woman.png')
+                else:
+                    icon = Image.open('./img/icon_man.png')
+                st.image(icon, width = 250)           
+            with col2:
+                st.header(estudiante[1] + ' ' + estudiante[2] + ' ' + estudiante[3])
+                st.header(estudiante[0])
+                st.header(estudiante[4])
         data = pd.DataFrame(res, columns = columns)
         st.dataframe(data = data)
     else:
