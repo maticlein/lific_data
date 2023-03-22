@@ -1,6 +1,7 @@
 import streamlit as st
 import sqlite3
 from PIL import Image
+import time
 
 def clear_text():
     st.session_state["matricula"] = ""
@@ -11,6 +12,11 @@ def main():
 
     con = sqlite3.connect("./data/lific.db")
     cur = con.cursor()
+
+    logos = Image.open('./img/logos_UFRO.png')
+    st.image(logos, width = 400)
+
+    st.title('LIFIC - Línea Integradora de Formación en Ingeniería y Ciencias')
 
     matricula = st.text_input('Matrícula', key = 'matricula').upper()
     apellido_1 = st.text_input('Apellido 1', key = 'apellido_1').upper()
@@ -26,6 +32,8 @@ def main():
         query = f"SELECT estudiantes.matricula, nombres, apellido_1, apellido_2, estudiantes.carrera, estudiantes.sexo, {asignatura}.asignatura, año, semestre, promedio_final, estado FROM estudiantes INNER JOIN {asignatura} ON estudiantes.matricula = {asignatura}.matricula WHERE (apellido_1 = '{apellido_1}' AND apellido_2 = '{apellido_2}') OR estudiantes.matricula = '{matricula}'"
 
     if clicked:
+        with st.spinner("Obteniendo información..."):
+            time.sleep(0.2)
         res = cur.execute(query).fetchall()
         st.text(res)
         if res != []:
