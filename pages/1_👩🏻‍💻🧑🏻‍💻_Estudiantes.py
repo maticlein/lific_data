@@ -33,7 +33,9 @@ if option == 'Asignatura':
 
 clicked = st.button('Buscar')
 reset = st.button('Limpiar', on_click = clear_text)
-    
+
+st.markdown("***")
+
 if option == 'Asignatura':
     query = f"SELECT estudiantes.matricula, nombres, apellido_1, apellido_2, estudiantes.carrera, estudiantes.sexo, {asignatura}.asignatura, año, semestre, promedio_final, estado_asignatura FROM estudiantes INNER JOIN {asignatura} ON estudiantes.matricula = {asignatura}.matricula WHERE (apellido_1 = '{apellido_1}' AND apellido_2 = '{apellido_2}') OR estudiantes.matricula = '{matricula}'"
     columns = ['matricula', 'nombres', 'apellido_1', 'apellido_2', 'carrera', 'sexo', 'asignatura', 'año', 'semestre', 'promedio_final', 'estado']
@@ -59,44 +61,17 @@ if clicked:
                 st.header(estudiante[4])  
         col1, col2, col3, col4, col5 = st.columns(5)
         if option == 'Asignatura':
-            with col1: 
-                st.metric(label = 'Asignatura', value = res[0][6])
-            with col2: 
-                st.metric(label = 'Año', value = res[0][7])
-            with col3: 
-                st.metric(label = 'Semestre', value = res[0][8])
-            with col4: 
-                st.metric(label = 'Promedio', value = res[0][9])
-            with col5: 
-                st.metric(label = 'Estado', value = res[0][10])
+            data = pd.DataFrame({'Año': [res[0][7]], 'Semestre': [res[0][8]], 'Promedio': [res[0][9]], 'Estado': [res[0][10]]}, index = [res[0][6]])
+            st.table(data)
         else:
-            with col1: 
-                st.metric(label = 'Asignatura', value = 'A1')
-                st.metric(label = 'Asignatura', value = 'A2', label_visibility = 'hidden')
-                st.metric(label = 'Asignatura', value = 'A3', label_visibility = 'hidden')
-                st.metric(label = 'Asignatura', value = 'A4', label_visibility = 'hidden')
-            with col2: 
-                st.metric(label = 'Año', value = res[0][6])
-                st.metric(label = 'Año', value = res[0][10], label_visibility = 'hidden')
-                st.metric(label = 'Año', value = res[0][14], label_visibility = 'hidden')
-                st.metric(label = 'Año', value = res[0][18], label_visibility = 'hidden')
-            with col3: 
-                st.metric(label = 'Semestre', value = res[0][7])
-                st.metric(label = 'Semestre', value = res[0][11], label_visibility = 'hidden')
-                st.metric(label = 'Semestre', value = res[0][15], label_visibility = 'hidden')
-                st.metric(label = 'Semestre', value = res[0][19], label_visibility = 'hidden')
-            with col4: 
-                st.metric(label = 'Promedio', value = res[0][8])
-                st.metric(label = 'Promedio', value = res[0][12], label_visibility = 'hidden')
-                st.metric(label = 'Promedio', value = res[0][16], label_visibility = 'hidden')
-                st.metric(label = 'Promedio', value = res[0][20], label_visibility = 'hidden')
-            with col5: 
-                st.metric(label = 'Estado', value = res[0][9])
-                st.metric(label = 'Estado', value = res[0][13], label_visibility = 'hidden')
-                st.metric(label = 'Estado', value = res[0][17], label_visibility = 'hidden')
-                st.metric(label = 'Estado', value = res[0][21], label_visibility = 'hidden')
+            data = pd.DataFrame({'Año': [res[0][6], res[0][10], res[0][14], res[0][18]], 'Semestre': [res[0][7], res[0][11], res[0][15], res[0][19]], 'Promedio': [res[0][8], res[0][12], res[0][16], res[0][20]], 'Estado': [res[0][9], res[0][13], res[0][17], res[0][21]]}, dtype = 'int', index = ['A1', 'A2', 'A3', 'A4'])
+            data.fillna(value = '-', inplace = True)
+            data = data.replace('', '-')
+            st.table(data)
     else:
         st.text("No se registra información.")
         
 if reset:
     clicked = False
+
+st.markdown("***")

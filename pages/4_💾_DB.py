@@ -28,7 +28,7 @@ st.title('DB Playground')
 con = sqlite3.connect("./data/lific.db")
 cur = con.cursor()
 
-query = st.text_area('Query', key = 'query', placeholder = 'Ingrese su query').upper()
+query = st.text_area('Query', key = 'query', placeholder = 'Ingrese su query')
 run = st.button('Run Query')
 reset = st.button('Limpiar', on_click = clear_text)
 

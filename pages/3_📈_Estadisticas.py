@@ -17,7 +17,9 @@ st.title('LIFIC - Línea Integradora de Formación en Ingeniería y Ciencias')
 con = sqlite3.connect("./data/lific.db")
 cur = con.cursor()
 
-query = "SELECT carrera, COUNT(*) FROM estudiantes GROUP BY carrera"
+st.header('Estudiantes por carrera')
+
+query = "SELECT carrera, COUNT(*) as estudiantes_totales FROM estudiantes GROUP BY carrera ORDER BY estudiantes_totales DESC"
 res = cur.execute(query).fetchall()
 
 data = pd.DataFrame(res, columns = ['Carrera', 'Cantidad'])
