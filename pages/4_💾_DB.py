@@ -18,11 +18,10 @@ with st.expander('docentes'):
     st.markdown("- docente_id\n- nombres\n- apellido_1\n- apellido_2\n- sexo\n- titulo\n- mail")
 
 with st.expander('estudiantes'):
-    st.markdown("- matricula\n- nombres\n- apellido_1\n- apellido_2\n- mail\n- carrera\n- sexo")
+    st.markdown("- matricula\n- nombres\n- apellido_1\n- apellido_2\n- mail\n- carrera\n- sexo\n- estado_estudiante")
 
 with st.expander('aX'):
-    st.markdown("- aX_id\n- asignatura\n- matricula\n- año\n- semestre\n- modulo\n- docente\n- notas\n- asistencia\n- promedio_final\n- estado")
-
+    st.markdown("- aX_id\n- asignatura\n- matricula\n- año\n- semestre\n- modulo\n- docente\n- notas\n- asistencia\n- promedio_final\n- estado_asignatura")
 
 st.title('DB Playground')
 
