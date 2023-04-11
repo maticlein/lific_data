@@ -1,7 +1,9 @@
 import streamlit as st
 from PIL import Image
 import sqlite3
+import numpy as np
 import pandas as pd
+import plotly.express as px
 import plotly.graph_objects as go
 
 favicon = Image.open('./img/logo_innovacion.png')
@@ -87,4 +89,73 @@ with col3:
     data.replace(['M', 'F'], ["Masculino", "Femenino"], inplace = True)
     st.dataframe(data = data)
 
+st.markdown('***')
+
+st.header('Resultados asignatura')
+
+asignatura = st.selectbox("Seleccione asignatura", ('A1', 'A2', 'A3', 'A4')).lower()
+anio = st.selectbox("Seleccione año", ('2022', '2023'))
+semestre = st.selectbox("Seleccione semestre", (1, 2))
+
+query = f"SELECT estudiantes.matricula, nombres, apellido_1, apellido_2, carrera, sexo, estado_estudiante, taller_1, taller_2, taller_3, promedio_final, estado_asignatura FROM estudiantes INNER JOIN {asignatura} ON estudiantes.matricula = {asignatura}.matricula WHERE año = {anio} AND semestre = {semestre} AND estado_asignatura != 'Convalidada'"
+
+res = cur.execute(query).fetchall()
+data = pd.DataFrame(data = res, columns = ['matricula', 'nombres', 'apellido_1', 'apellido_2', 'carrera', 'sexo', 'estado_estudiante', 'taller_1', 'taller_2', 'taller_3', 'promedio_final', 'estado_asignatura'], dtype = 'float')
+
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    inscritos = data
+    st.metric('Estudiantes Inscritos', len(inscritos))
+with col2:
+    activos = data[(data['estado_asignatura'] == 'Aprobada') | (data['estado_asignatura'] == 'Reprobada')]
+    st.metric('Estudiantes Activos', len(activos))
+with col3:
+    aprobados = data[data['estado_asignatura'] == 'Aprobada']
+    st.metric('Estudiantes Aprobados', len(aprobados))
+with col4:
+    aprobados = data[data['estado_asignatura'] == 'Reprobada']
+    st.metric('Estudiantes Reprobados', len(aprobados)) 
+
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    inscritos = data[(data['estado_asignatura'] == 'Aprobada') | (data['estado_asignatura'] == 'Reprobada')]
+    st.metric('Promedio Inscritos', round(inscritos['promedio_final'].astype('float').mean(), 1)) 
+
+with col2:
+    aprobados = data[data['estado_asignatura'] == 'Aprobada']
+    st.metric('Promedio Aprobados', round(aprobados['promedio_final'].astype('float').mean(), 1))
+
+with col3:
+    mujeres = data[(data['sexo'] == 'F') & ((data['estado_asignatura'] == 'Aprobada') | (data['estado_asignatura'] == 'Reprobada'))]
+    st.metric('Promedio Mujeres', round(mujeres['promedio_final'].astype('float').mean(), 1))
+
+with col4:
+    hombres = data[(data['sexo'] == 'M') & ((data['estado_asignatura'] == 'Aprobada') | (data['estado_asignatura'] == 'Reprobada'))]
+    st.metric('Promedio Hombres', round(hombres['promedio_final'].astype('float').mean(), 1))
+
+talleres_activos = data[(data['estado_asignatura'] == 'Aprobada') | (data['estado_asignatura'] == 'Reprobada')]
+talleres_aprobados = data[(data['estado_asignatura'] == 'Aprobada')]
+prom_taller1 = round(talleres_activos['taller_1'].replace("#N/D", np.nan).dropna().astype('float').mean(), 1)
+prom_taller2 = round(talleres_activos['taller_2'].replace("#N/D", np.nan).dropna().astype('float').mean(), 1)
+prom_taller3 = round(talleres_activos['taller_3'].replace("#N/D", np.nan).dropna().astype('float').mean(), 1)
+prom_taller1_ap = round(talleres_aprobados['taller_1'].replace("#N/D", np.nan).dropna().astype('float').mean(), 1)
+prom_taller2_ap = round(talleres_aprobados['taller_2'].replace("#N/D", np.nan).dropna().astype('float').mean(), 1)
+prom_taller3_ap = round(talleres_aprobados['taller_3'].replace("#N/D", np.nan).dropna().astype('float').mean(), 1)
+notas = pd.DataFrame(
+    {'tipo': ['taller_1', 'taller_2', 'taller_3', 'taller_1', 'taller_2', 'taller_3'],
+     'estudiantes': ['inscritos', 'inscritos', 'inscritos', 'aprobados', 'aprobados', 'aprobados'],
+     'nota': [prom_taller1, prom_taller2, prom_taller3, prom_taller1_ap, prom_taller2_ap, prom_taller3_ap]}
+)
+fig = px.histogram(notas, x="tipo", y="nota", color = 'estudiantes', barmode='group', range_y=[1, 7])
+st.plotly_chart(fig)
+
+fig = px.pie(data['sexo'], names = 'sexo', title = 'Distribución por sexo')
+fig.update_layout(font = {"size": 18})
+st.plotly_chart(fig)
+
+fig = px.pie(data['estado_asignatura'], names = 'estado_asignatura', title = 'Distribución por estado')
+fig.update_layout(font = {"size": 18})
+st.plotly_chart(fig)
+
+st.dataframe(data)
 st.markdown('***')
