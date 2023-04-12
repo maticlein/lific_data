@@ -138,13 +138,16 @@ talleres_aprobados = data[(data['estado_asignatura'] == 'Aprobada')]
 prom_taller1 = round(talleres_activos['taller_1'].replace("#N/D", np.nan).dropna().astype('float').mean(), 1)
 prom_taller2 = round(talleres_activos['taller_2'].replace("#N/D", np.nan).dropna().astype('float').mean(), 1)
 prom_taller3 = round(talleres_activos['taller_3'].replace("#N/D", np.nan).dropna().astype('float').mean(), 1)
+prom_final = round(inscritos['promedio_final'].astype('float').mean(), 1)
 prom_taller1_ap = round(talleres_aprobados['taller_1'].replace("#N/D", np.nan).dropna().astype('float').mean(), 1)
 prom_taller2_ap = round(talleres_aprobados['taller_2'].replace("#N/D", np.nan).dropna().astype('float').mean(), 1)
 prom_taller3_ap = round(talleres_aprobados['taller_3'].replace("#N/D", np.nan).dropna().astype('float').mean(), 1)
+prom_final_ap = round(aprobados['promedio_final'].astype('float').mean(), 1)
+
 notas = pd.DataFrame(
-    {'tipo': ['taller_1', 'taller_2', 'taller_3', 'taller_1', 'taller_2', 'taller_3'],
-     'estudiantes': ['inscritos', 'inscritos', 'inscritos', 'aprobados', 'aprobados', 'aprobados'],
-     'nota': [prom_taller1, prom_taller2, prom_taller3, prom_taller1_ap, prom_taller2_ap, prom_taller3_ap]}
+    {'tipo': ['taller_1', 'taller_2', 'taller_3', 'promedio_final', 'taller_1', 'taller_2', 'taller_3', 'promedio_final'],
+     'estudiantes': ['inscritos', 'inscritos', 'inscritos', 'inscritos', 'aprobados', 'aprobados', 'aprobados', 'aprobados'],
+     'nota': [prom_taller1, prom_taller2, prom_taller3, prom_final, prom_taller1_ap, prom_taller2_ap, prom_taller3_ap, prom_final_ap]}
 )
 fig = px.histogram(notas, x="tipo", y="nota", color = 'estudiantes', barmode='group', range_y=[1, 7])
 st.plotly_chart(fig)
