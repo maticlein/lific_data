@@ -4,6 +4,7 @@ import sqlite3
 import pandas as pd
 
 favicon = Image.open('./img/logo_innovacion.png')
+
 st.set_page_config(
     page_title = "LIFIC Data - DB",
     page_icon = favicon 
@@ -11,6 +12,11 @@ st.set_page_config(
 
 def clear_text():
     st.session_state["query"] = ""
+
+@st.cache_data
+def convert_df(df):
+    # IMPORTANT: Cache the conversion to prevent computation on every rerun
+    return df.to_csv().encode('utf-8')
 
 st.title('Campos tablas DB')
 
@@ -37,3 +43,5 @@ res = cur.execute(query).fetchall()
 if res != []:
     data = pd.DataFrame(data = res)
     st.dataframe(data)
+    csv = convert_df(data)
+    st.download_button(label = 'Descargar datos', data = csv, file_name = 'data_db_query.csv', mime = 'text/csv')
