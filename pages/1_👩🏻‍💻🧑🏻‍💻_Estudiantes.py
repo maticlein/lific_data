@@ -60,15 +60,16 @@ if clicked:
                 st.header(estudiante[0])
                 st.header(estudiante[4])  
                 st.header(estudiante[6])  
-        col1, col2, col3, col4, col5 = st.columns(5)
         if option == 'Asignatura':
             data = pd.DataFrame({'Año': [res[0][8]], 'Semestre': [res[0][9]], 'Promedio': [res[0][10]], 'Estado': [res[0][11]]}, index = [res[0][7]])
-            st.table(data)
         else:
-            data = pd.DataFrame({'Año': [res[0][7], res[0][11], res[0][15], res[0][19]], 'Semestre': [res[0][8], res[0][12], res[0][16], res[0][20]], 'Promedio': [res[0][9], res[0][13], res[0][17], res[0][21]], 'Estado': [res[0][10], res[0][14], res[0][18], res[0][22]]}, dtype = 'int', index = ['A1', 'A2', 'A3', 'A4'])
-            data.fillna(value = '-', inplace = True)
-            data = data.replace('', '-')
-            st.table(data)
+            data = pd.DataFrame({'Año': [res[0][7], res[0][11], res[0][15], res[0][19]], 'Semestre': [res[0][8], res[0][12], res[0][16], res[0][20]], 'Promedio': [res[0][9], res[0][13], res[0][17], res[0][21]], 'Estado': [res[0][10], res[0][14], res[0][18], res[0][22]]}, index = ['A1', 'A2', 'A3', 'A4'])
+            data["Año"] = data["Año"].fillna(value = '0').astype(int).astype(str)
+            data["Semestre"] = data["Semestre"].fillna(value = 0).astype(int).astype(str)
+            data['Promedio'] = data["Promedio"].replace('', 0).fillna(value = 0).astype(float).astype(str)
+            data['Estado'] = data["Estado"].fillna(value = '0').astype(str)
+            data = data.replace(["0", "0.0"], '-')
+        st.table(data)
     else:
         st.text("No se registra información.")
         
