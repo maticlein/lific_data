@@ -3,6 +3,8 @@ from PIL import Image
 import sqlite3
 import time
 import pandas as pd
+from fpdf import FPDF
+import tempfile
 
 favicon = Image.open('./img/logo_innovacion.png')
 st.set_page_config(
@@ -70,6 +72,18 @@ if clicked:
             data['Estado'] = data["Estado"].fillna(value = '0').astype(str)
             data = data.replace(["0", "0.0"], '-')
         st.table(data)
+        
+        temp_file = tempfile.NamedTemporaryFile(delete = False, suffix = '.pdf')
+        temporary_location = temp_file.name
+        pdf = FPDF()  
+        pdf.add_page()
+        pdf.set_font("Arial", size = 15)
+        pdf.cell(200, 10, txt = estudiante[1] + ' ' + estudiante[2] + ' ' + estudiante[3], ln = 1, align = 'C')
+        for i in range(0, 4):
+          pdf.cell(200, 10, txt = data["Año"][i] + '-' + data["Semestre"][i] + ' ' + data["Promedio"][i] + ' ' + data["Estado"][i], ln = 1, align = 'C')
+        pdf.output(temporary_location)
+        with open(temporary_location, "rb") as file:
+          st.download_button(label = 'Descargar reporte', data = file, file_name = f"reporte_{estudiante[2]}_{estudiante[3]}.pdf")
     else:
         st.text("No se registra información.")
         
