@@ -25,10 +25,6 @@ df = pd.DataFrame(dict(
     valor = [diseno, innovacion, resp_social],
     competencia = ['Diseño','Innovación','Responsabilidad Social']))
 
-# fig = px.line_polar(df, r = [7, 7, 7], theta = 'competencia', line_close = True, color_discrete_sequence = ["#787777"])
-# fig = px.line_polar(df, r = 'valor', theta = 'competencia', line_close = True, color_discrete_sequence = ["#C03278"])
-# fig.update_traces(fill = 'toself')
-
 fig = go.Figure()
 
 
@@ -44,7 +40,7 @@ fig.add_trace(go.Scatterpolar(
       theta=df["competencia"],
       fill='toself',
       name='Estudiante',
-      fillcolor = "#C03278"
+      fillcolor = "#C03278",
 ))
 
 fig.update_layout(
