@@ -21,6 +21,38 @@ st.plotly_chart(cmpt.competences_sunburst_plot(), use_container_width=True)
 cmpt.competences_info()
 
 st.markdown("***")
+st.header("Evaluación de Anteproyecto")
+rubrica = st.file_uploader(label = "Sube la rúbrica de anteproyecto ", type = ['xlsx'], accept_multiple_files = False,)
+if rubrica is not None:
+    df_rubrica = pd.read_excel(rubrica, header = 1).drop("Unnamed: 11", axis = 1).drop([15, 16, 17], axis = 0)
+    df_problematica = df_rubrica[df_rubrica["Categorías Evaluadas de las Competencias"] == "Problemática"]
+    df_propuesta_solucion = df_rubrica[df_rubrica["Categorías Evaluadas de las Competencias"] == "Propuesta de la Solución"]
+    df_documentacion = df_rubrica[df_rubrica["Categorías Evaluadas de las Competencias"] == "Documentación"]    
+    options = [column for column in df_problematica.columns if "Grupo" in str(column)]    
+    option = st.selectbox('Grupos', options)
+    if option is not None:
+        problematica = 0
+        propuesta_solucion = 0
+        documentacion = 0
+        for index, row in df_problematica.iterrows():
+            problematica += row["Porcentaje"] * 100 * (row[option] / 3)
+        for index, row in df_propuesta_solucion.iterrows():
+            propuesta_solucion += row["Porcentaje"] * 100 * (row[option] / 3)
+        for index, row in df_documentacion.iterrows():
+            documentacion += row["Porcentaje"] * 100 * (row[option] / 3)
+        problematica = round(problematica, 1)
+        propuesta_solucion = round(propuesta_solucion, 1)
+        documentacion = round(documentacion, 1)
+        st.write(f"Problemática: {problematica}% de 25%")
+        st.plotly_chart(cmpt.progress_plot(problematica, "Problemática"), use_container_width=True)
+        st.write(f"Propuesta de la Solución: {propuesta_solucion}% de 60%")
+        st.plotly_chart(cmpt.progress_plot(propuesta_solucion, "Propuesta de la Solución"), use_container_width=True)
+        st.write(f"Documentación: {documentacion}% de 15%")
+        st.plotly_chart(cmpt.progress_plot(documentacion, "Documentación"), use_container_width=True)
+
+
+
+st.markdown("***")
 st.header('Reporte de resultados')
 uploaded_file = st.file_uploader(label = "Sube el archivo de notas", type = ['csv'], accept_multiple_files = False,)
 if uploaded_file is not None: 

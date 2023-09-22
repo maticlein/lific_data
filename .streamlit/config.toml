@@ -4,3 +4,6 @@ primaryColor="#c03278"
 backgroundColor="#FFFFFF"
 textColor="#31333F"
 font="sans serif"
+
+[server]
+runOnSave = true

@@ -55,7 +55,7 @@ def competences_sunburst_plot():
             "RA1", "RA2", "RA3", 
             "Problemática", "Propuesta de Solución", "Documentación",
             "Solución", "Comportamiento Ético", "Comunicación",
-            "Prototipo", "Trabajo en equipo", "Presentación"],
+            "Prototipo", "Trabajo Colaborativo", "Presentación"],
     parent=["", "", "", "Innovación", "Resp Social", "Diseño", "RA1", "RA1", "RA1", "RA2", "RA2", "RA2", "RA3", "RA3", "RA3"],
     value=[1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]
     )
